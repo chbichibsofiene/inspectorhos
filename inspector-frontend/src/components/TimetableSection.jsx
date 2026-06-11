@@ -22,6 +22,7 @@ export default function TimetableSection() {
   });
 
   const days = ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"];
+  const allowedSlotDays = days.filter((day) => day !== "SUNDAY");
 
   useEffect(() => {
     loadData();
@@ -50,6 +51,10 @@ export default function TimetableSection() {
   async function handleAddSlot(e) {
     e.preventDefault();
     setError("");
+    if (newSlot.dayOfWeek === "SUNDAY") {
+      setError("Sunday slots are not allowed.");
+      return;
+    }
     try {
       await addTimetableSlot(newSlot);
       setShowModal(false);
@@ -133,7 +138,7 @@ export default function TimetableSection() {
                     value={newSlot.dayOfWeek} 
                     onChange={e => setNewSlot({...newSlot, dayOfWeek: e.target.value})}
                   >
-                    {days.map(d => <option key={d} value={d}>{t(d.charAt(0) + d.slice(1).toLowerCase())}</option>)}
+                    {allowedSlotDays.map(d => <option key={d} value={d}>{t(d.charAt(0) + d.slice(1).toLowerCase())}</option>)}
                   </select>
                 </label>
                 <label>
